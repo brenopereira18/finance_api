@@ -32,8 +32,7 @@ PAYMENT_METHOD = [
 ]
 
 
-class Transaction(models.Model):
-    id = models.AutoField(primary_key=True)
+class Transaction(models.Model):    
     name = models.CharField(max_length=50, verbose_name=_("Nome"))  
     type = models.CharField(max_length=25, choices=TRANSACTION_TYPE, verbose_name=_("Tipo"))
     amount = models.DecimalField(max_digits=8, decimal_places=2, verbose_name=_("Valor"))
