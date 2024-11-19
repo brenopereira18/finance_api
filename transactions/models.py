@@ -33,13 +33,14 @@ PAYMENT_METHOD = [
 
 
 class Transaction(models.Model):
+    id = models.AutoField(primary_key=True)
     name = models.CharField(max_length=50, verbose_name=_("Nome"))  
-    type = models.CharField(choices=TRANSACTION_TYPE, verbose_name=_("Tipo"))
-    amount = models.DecimalField(decimal_places=2, verbose_name=_("Valor"))
-    category = models.CharField(choices=TRANSACTION_CATEGORY, verbose_name=_("Categoria"))
-    paymentMethod = models.CharField(choices=PAYMENT_METHOD, verbose_name=_("Método de Pagamento"))
+    type = models.CharField(max_length=25, choices=TRANSACTION_TYPE, verbose_name=_("Tipo"))
+    amount = models.DecimalField(max_digits=8, decimal_places=2, verbose_name=_("Valor"))
+    category = models.CharField(max_length=25, choices=TRANSACTION_CATEGORY, verbose_name=_("Categoria"))
+    paymentMethod = models.CharField(max_length=25, choices=PAYMENT_METHOD, verbose_name=_("Método de Pagamento"))
     date = models.DateField(verbose_name=_("Data"))
-    createdAt = models.DateTimeField(default=datetime.now, auto_now_add=True, verbose_name=_("Criado em"))
+    createdAt = models.DateTimeField(auto_now_add=True, verbose_name=_("Criado em"))
     updatedAt = models.DateTimeField(auto_now=True, verbose_name=_("Atualizado em"))
 
     class Meta:
