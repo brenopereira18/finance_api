@@ -13,6 +13,6 @@ class TransactionSerializer(serializers.ModelSerializer):
       'category': {'required': True},
       'paymentMethod': {'required': True},
       'date': {'required': True},
-      'createdAt': {'ready_only': True},  
-      'updatedAt': {'ready_only': True}, 
+      'createdAt': {'read_only': True},  
+      'updatedAt': {'read_only': True}, 
     }
