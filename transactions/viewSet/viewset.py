@@ -5,11 +5,13 @@ from rest_framework.response import Response
 from transactions.models import Transaction
 from transactions.serializers import TransactionSerializer
 from .metrics import (calculate_amount_and_percentage, get_transactions_for_month, validate_transactions)
+from rest_framework.permissions import IsAuthenticated
 
 
 class TransactionViewSet(viewsets.ModelViewSet):
   queryset = Transaction.objects.all()
-  serializer_class = TransactionSerializer  
+  serializer_class = TransactionSerializer 
+  permission_classes = [IsAuthenticated] 
   
   def process_calculate(self, group_by_field, month=None, year=None, filter_by_type=None):
     """ Pega o mês e ano atual se não for passado. """
