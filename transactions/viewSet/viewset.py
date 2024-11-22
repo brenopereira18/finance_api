@@ -4,14 +4,20 @@ from rest_framework import viewsets
 from rest_framework.response import Response
 from transactions.models import Transaction
 from transactions.serializers import TransactionSerializer
-from .metrics import (calculate_amount_and_percentage, get_transactions_for_month, validate_transactions)
+from .metrics import (calculate_amount_and_percentage, validate_transactions)
 from rest_framework.permissions import IsAuthenticated
 
 
-class TransactionViewSet(viewsets.ModelViewSet):
-  queryset = Transaction.objects.all()
+class TransactionViewSet(viewsets.ModelViewSet):  
   serializer_class = TransactionSerializer 
   permission_classes = [IsAuthenticated] 
+
+  def get_queryset(self):
+    return Transaction.objects.filter(user=self.request.user)
+  
+  def perform_create(self, serializer):
+    """ Garante que o usuário autenticado seja atribuído na transação. """
+    serializer.save(user=self.request.user)
   
   def process_calculate(self, group_by_field, month=None, year=None, filter_by_type=None):
     """ Pega o mês e ano atual se não for passado. """
@@ -21,7 +27,7 @@ class TransactionViewSet(viewsets.ModelViewSet):
       year = current_date.year
       
     """ Obtem as transações para o mês e ano específico. """ 
-    transactions_for_month = get_transactions_for_month(month, year)
+    transactions_for_month = self.get_queryset().filter(date__month=month, date__year=year)
 
     """ Filtra por transações do tipo EXPENSE. """
     if filter_by_type:

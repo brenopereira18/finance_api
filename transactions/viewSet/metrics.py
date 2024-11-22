@@ -1,9 +1,4 @@
 from django.db.models import Sum, DecimalField, F, ExpressionWrapper
-from transactions.models import Transaction
-
-def get_transactions_for_month(month, year):
-  """Filtra as transações para o mês e ano passado."""
-  return Transaction.objects.filter(date__month=month, date__year=year)
     
 def validate_transactions(transactions):
   """Verifica se há transações e se o total não é zero."""

@@ -15,4 +15,5 @@ class TransactionSerializer(serializers.ModelSerializer):
       'date': {'required': True},
       'createdAt': {'read_only': True},  
       'updatedAt': {'read_only': True}, 
+      'user': {'required': False},
     }
