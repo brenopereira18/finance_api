@@ -45,7 +45,7 @@ class TransactionViewSet(viewsets.ModelViewSet):
     """ Calcula o total e as porcentagens de trasações. """ 
     result = calculate_amount_and_percentage(transactions_for_month, total_transaction_amount, group_by_field)
         
-    return Response(result)
+    return result
     
   @action(detail=False, methods=['get'])
   def transaction_by_type(self, request, *args, **kwargs):
@@ -53,14 +53,21 @@ class TransactionViewSet(viewsets.ModelViewSet):
     month = request.query_params.get('month', None)
     year = request.query_params.get('year', None)
 
-    return self.process_calculate('type', month, year)    
+    transactions = self.process_calculate('type', month, year) 
+    current_balance = transactions["DEPOSIT"]["total"] - transactions["EXPENSE"]["total"] - transactions["INVESTMENT"]["total"] 
+
+    result = {
+      "current_balance": current_balance,
+      "transactions": transactions,
+    }
+    return Response(result)  
   
   @action(detail=False, methods=['get'])
   def transaction_by_category(self, request, *args, **kwargs):    
     month = request.query_params.get('month', None)
     year = request.query_params.get('year', None)
-
-    return self.process_calculate('category', month, year, filter_by_type='EXPENSE')
+    
+    return Response(self.process_calculate('category', month, year, filter_by_type='EXPENSE'))
   
   @action(detail=False, methods=['get'])
   def last_transactions(self, request, *args, **kwargs):
@@ -72,11 +79,13 @@ class TransactionViewSet(viewsets.ModelViewSet):
       month = current_date.month
       year = current_date.year
 
-    last_transactions = get_transactions_for_month(month, year)
+    last_transactions = self.get_queryset().filter(date__month=month, date__year=year)
     response_last_transactions = last_transactions.order_by('-updatedAt')[:10]
     
     serializer = self.get_serializer(response_last_transactions, many=True)
 
-    return Response(serializer.data)
+    return Response(serializer.data) 
+  
+    
         
     
