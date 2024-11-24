@@ -7,7 +7,7 @@ PLAN_CHOICES = [
   ('PREMIUM', _('premium')),
 ]
 
-class UserPlan(models.models):
+class UserPlan(models.Model):
   user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='user_plan')
   plan = models.CharField(max_length=10, choices=PLAN_CHOICES, default='FREE')
 
