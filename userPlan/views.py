@@ -13,7 +13,7 @@ class UpdatePlanViewSet(viewsets.ModelViewSet):
     user_plan = request.user.user_plan
     new_plan = request.data.get('plan')
 
-    if new_plan not in ['FREE', 'PREMIUM']:  # Ajuste de acordo com os valores
+    if new_plan not in ['FREE', 'PREMIUM']:  
       raise ValidationError({"error": "Plano inválido."})
 
     user_plan.plan = new_plan
