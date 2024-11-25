@@ -1,4 +1,4 @@
-from datetime import datetime
+from django.utils.timezone import now
 from rest_framework.decorators import action
 from rest_framework import viewsets
 from rest_framework.response import Response
@@ -6,6 +6,7 @@ from transactions.models import Transaction
 from transactions.serializers import TransactionSerializer
 from .metrics import (calculate_amount_and_percentage, validate_transactions)
 from rest_framework.permissions import IsAuthenticated
+from rest_framework.exceptions import ValidationError
 
 
 class TransactionViewSet(viewsets.ModelViewSet):  
@@ -16,13 +17,29 @@ class TransactionViewSet(viewsets.ModelViewSet):
     return Transaction.objects.filter(user=self.request.user)
   
   def perform_create(self, serializer):
+    user = self.request.user
+    user_plan = user.user_plan
+
+    if user_plan.plan == 'FREE':
+      current_month = now().month
+      current_year = now().year
+
+      transactions_count = Transaction.objects.filter(
+        user=user,
+        date__month=current_month,
+        date__year=current_year
+      ).count()
+
+      if transactions_count >= user_plan.month_transaction_limit():
+        raise ValidationError("Você atingiu o limite mensal de transações do plano gratuito.")  
+
     """ Garante que o usuário autenticado seja atribuído na transação. """
-    serializer.save(user=self.request.user)
+    serializer.save(user=user)
   
   def process_calculate(self, group_by_field, month=None, year=None, filter_by_type=None):
     """ Pega o mês e ano atual se não for passado. """
     if not month or not year:
-      current_date = datetime.now()
+      current_date = now()
       month = current_date.month
       year = current_date.year
       
