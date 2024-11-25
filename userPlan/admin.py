@@ -3,7 +3,7 @@ from userPlan.models import UserPlan
 
 
 class UserPlanAdmin(admin.ModelAdmin):
-  list_display = ('user', 'plan',)
+  list_display = ('id', 'user', 'plan',)
   search_fields =  ('user',)
 
 
