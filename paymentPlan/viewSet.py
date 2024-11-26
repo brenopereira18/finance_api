@@ -6,13 +6,17 @@ from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 from django.shortcuts import get_object_or_404
 from userPlan.models import UserPlan
+import logging
 
 load_dotenv()
 
 stripe.api_key = os.getenv('STRIPE_SECRET_KEY') 
 
+logger = logging.getLogger(__name__)
 
-class StripeWebhookViewSet(viewsets.ViewSet):   
+
+class StripeWebhookViewSet(viewsets.ViewSet):
+  permission_classes = [AllowAny]    
 
   def create(self, request, *args, **kwargs):
     payload = request.body    
@@ -36,5 +40,24 @@ class StripeWebhookViewSet(viewsets.ViewSet):
         if user_plan.plan == 'FREE':
           user_plan.plan = 'PREMIUM'
           user_plan.save()
+          logger.info(f"User {user_id} plan updated to PREMIUM")
+        else:
+          logger.info(f"User {user_id} already has a PREMIUM plan")
+
+    elif event['type'] == 'customer.subscription.deleted':
+      subscription = event['data']['object']
+      user_id = subscription.get('metadata', {}).get('user_id')
+
+      if user_id:
+        user_plan = get_object_or_404(UserPlan, user__id=user_id)
+        if user_plan.plan != 'FREE':
+          user_plan.plan = 'FREE'
+          user_plan.save()
+          logger.info(f"User {user_id} plan reverted to FREE")
+        else:
+          logger.info(f"User {user_id} already has a FREE plan")
+
+    else:
+      logger.info(f"Unhandled event type: {event['type']}")
 
     return Response({'status': 'success'}, status=status.HTTP_200_OK)
