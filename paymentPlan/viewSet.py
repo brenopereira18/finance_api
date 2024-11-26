@@ -12,8 +12,7 @@ load_dotenv()
 stripe.api_key = os.getenv('STRIPE_SECRET_KEY') 
 
 
-class StripeWebhookViewSet(viewsets.ViewSet):
-  permission_classes = [AllowAny]  
+class StripeWebhookViewSet(viewsets.ViewSet):   
 
   def create(self, request, *args, **kwargs):
     payload = request.body    
