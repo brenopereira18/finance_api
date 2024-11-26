@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     "transactions",
     "userPlan",
     "user",
+    "paymentPlan",
 ]
 
 MIDDLEWARE = [
