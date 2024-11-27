@@ -44,7 +44,8 @@ INSTALLED_APPS = [
     "transactions",
     "userPlan",
     "user",
-    "paymentPlan",
+    "StripeUpdatePlan",
+    "StripeSubscription",
 ]
 
 MIDDLEWARE = [
