@@ -7,7 +7,7 @@ urlpatterns = [
     re_path('finance_api/(?P<version>(v1|v2))/', include('transactions.urls')),
     re_path('finance_api/(?P<version>(v1|v2))/', include('StripeUpdatePlan.urls')),
     re_path('finance_api/(?P<version>(v1|v2))/', include('StripeSubscription.urls')),
-    re_path('finance_api/(?P<version>(v1|v2))/', include('user.urls')),
+    re_path('finance_api/(?P<version>(v1|v2))/', include('registerUser.urls')),
     re_path('finance_api/(?P<version>(v1|v2))/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
     re_path('finance_api/(?P<version>(v1|v2))/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
 ]
