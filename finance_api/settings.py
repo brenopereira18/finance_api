@@ -43,7 +43,7 @@ INSTALLED_APPS = [
     'rest_framework_simplejwt',
     "transactions",
     "userPlan",
-    "user",
+    "registerUser",
     "StripeUpdatePlan",
     "StripeSubscription",
 ]
