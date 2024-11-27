@@ -15,7 +15,7 @@ stripe.api_key = os.getenv('STRIPE_SECRET_KEY')
 logger = logging.getLogger(__name__)
 
 
-class StripeWebhookViewSet(viewsets.ViewSet):
+class StripeUpdatePlanWebhookViewSet(viewsets.ViewSet):
   permission_classes = [AllowAny]    
 
   def create(self, request, *args, **kwargs):
